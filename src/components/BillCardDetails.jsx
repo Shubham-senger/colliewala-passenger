@@ -2,9 +2,10 @@ import React, { useEffect, useState } from 'react';
 
 const BillDetailsCard = () => {
   const [billDetails, setBillDetails] = useState({
-    rideCharge: 0,
-    bookingFees: 0,
-    discount: 0,
+    CoolieCharge: 200,
+    bookingFees: 10,
+    discount: 10,
+    taxes:0,
   });
   const [totalAmount, setTotalAmount] = useState(0);
 
@@ -25,8 +26,9 @@ const BillDetailsCard = () => {
 
   useEffect(() => {
     // Calculate total amount whenever billDetails changes
-    const { rideCharge, bookingFees, discount } = billDetails;
-    const total = rideCharge + bookingFees - discount;
+    const { CoolieCharge, bookingFees, discount } = billDetails;
+   let total = CoolieCharge + bookingFees - discount;
+  total=total*1.18;
     setTotalAmount(total);
   }, [billDetails]);
 
@@ -47,9 +49,9 @@ const BillDetailsCard = () => {
                 </svg>
               </span>
               <p className="block font-sans p-3 text-base antialiased font-normal leading-relaxed text-inherit">
-                Ride Charge 
+                Coolie Charge 
               </p>
-              <span>₹{billDetails.rideCharge.toFixed(2)}</span>
+              <span>₹{billDetails.CoolieCharge.toFixed(2)}</span>
             </li>
             <li className="flex items-center justify-between gap-4">
               <span className="p-1 border rounded-full border-white/20 bg-white/20">
@@ -73,9 +75,21 @@ const BillDetailsCard = () => {
               </p>
               <span>- ₹{billDetails.discount.toFixed(2)}</span>
             </li>
-            
+                <li className="flex items-center mb-7 justify-between gap-4">
+              <span className="p-1 border rounded-full border-white/20 bg-white/20">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="2" stroke="currentColor" className="w-3 h-3">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5"></path>
+                </svg>
+              </span>
+              <p className="block p-3 font-sans text-base antialiased font-normal leading-relaxed text-inherit">
+                Taxes 
+              </p>
+              <span>18%</span>
+            </li>
+        
           </ul>
         </div>
+
         <div className='flex items-center  border-t border-white/10 justify-between gap-4'>
           <p className="block  p-3 font-sans text-base antialiased font-normal leading-relaxed text-inherit">
             Total Amount 
@@ -87,7 +101,7 @@ const BillDetailsCard = () => {
             className="align-middle select-none font-sans font-bold text-center uppercase transition-all disabled:opacity-50 disabled:shadow-none disabled:pointer-events-none text-sm py-3.5 px-7 rounded-lg bg-white text-gray-900 shadow-md shadow-blue-gray-500/10 hover:shadow-lg hover:shadow-blue-gray-500/20 focus:opacity-[0.85] focus:shadow-none active:opacity-[0.85] active:shadow-none block w-full hover:scale-[1.02] focus:scale-[1.02] active:scale-100"
             type="button"
           >
-            Buy Now
+            Print
           </button>
         </div>
       </div>
