@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
+import { motion } from 'framer-motion';
 
 const servingStations = ['Prayagraj Rambagh', 'Jhunsi', 'Banaras'];
 
@@ -45,25 +46,60 @@ function BookPage() {
   };
 
   return (
-    <div className="flex flex-col items-center justify-center h-screen overflow-auto bg-gray-900 p-4">
+    <div className="flex flex-col items-center justify-center h-screen bg-gray-900 p-4 relative overflow-hidden">
       <div className="absolute inset-0 opacity-75 bg-cover bg-center" style={{ backgroundImage: 'url(https://raw.githubusercontent.com/mohammadjarabah681/codepen-assets/main/pens/ExpzvRa/images/bg-desktop.png)' }}></div>
 
-      <h1 className="text-4xl font-bold text-white mb-6">Book Your Collie</h1>
-      <div className="bg-white bg-opacity-20 backdrop-blur-lg p-8 rounded-2xl shadow-xl max-w-md w-full text-white">
+      <motion.h1
+        className="text-4xl font-bold text-white mb-6"
+        initial={{ opacity: 0, y: -50 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5 }}
+      >
+        Book Your Collie
+      </motion.h1>
+
+      <motion.div
+        className="bg-white bg-opacity-20 backdrop-blur-lg p-8 rounded-2xl shadow-xl max-w-md w-full text-white"
+        initial={{ opacity: 0, scale: 0.8 }}
+        animate={{ opacity: 1, scale: 1 }}
+        transition={{ duration: 0.5 }}
+      >
         <h2 className="text-2xl font-semibold mb-4">Select an option:</h2>
         <div className="grid grid-cols-1 gap-4 mb-4">
-          <Link to="/geolocator" className="block p-4 bg-white bg-opacity-30 backdrop-blur-sm rounded-lg shadow-lg text-center text-lg font-semibold text-gray-900 hover:bg-opacity-40 transition-all">
-            Auto from GPS
+          <Link to="/geolocator">
+            <motion.div
+              className="block p-4 bg-white bg-opacity-30 backdrop-blur-sm rounded-lg shadow-lg text-center text-lg font-semibold text-gray-900 hover:bg-opacity-40 transition-all cursor-pointer"
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+            >
+              Auto from GPS
+            </motion.div>
           </Link>
-          <Link to="/pnrstation" className="block p-4 bg-white bg-opacity-30 backdrop-blur-sm rounded-lg shadow-lg text-center text-lg font-semibold text-gray-900 hover:bg-opacity-40 transition-all">
-            Enter PNR
+          <Link to="/pnrstation">
+            <motion.div
+              className="block p-4 bg-white bg-opacity-30 backdrop-blur-sm rounded-lg shadow-lg text-center text-lg font-semibold text-gray-900 hover:bg-opacity-40 transition-all cursor-pointer"
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+            >
+              Enter PNR
+            </motion.div>
           </Link>
-          <div onClick={() => handleModeSelect('train')} className="cursor-pointer p-4 bg-white bg-opacity-30 backdrop-blur-sm rounded-lg shadow-lg text-center text-lg font-semibold text-gray-900 hover:bg-opacity-40 transition-all">
+          <motion.div
+            onClick={() => handleModeSelect('train')}
+            className="cursor-pointer p-4 bg-white bg-opacity-30 backdrop-blur-sm rounded-lg shadow-lg text-center text-lg font-semibold text-gray-900 hover:bg-opacity-40 transition-all"
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+          >
             Enter Train number with Date
-          </div>
-          <div onClick={() => handleModeSelect('manual')} className="cursor-pointer p-4 bg-white bg-opacity-30 backdrop-blur-sm rounded-lg shadow-lg text-center text-lg font-semibold text-gray-900 hover:bg-opacity-40 transition-all">
+          </motion.div>
+          <motion.div
+            onClick={() => handleModeSelect('manual')}
+            className="cursor-pointer p-4 bg-white bg-opacity-30 backdrop-blur-sm rounded-lg shadow-lg text-center text-lg font-semibold text-gray-900 hover:bg-opacity-40 transition-all"
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+          >
             Manually enter
-          </div>
+          </motion.div>
         </div>
 
         {mode === 'train' && (
@@ -121,10 +157,15 @@ function BookPage() {
 
         {error && <p className="text-red-500 mt-4">{error}</p>}
 
-        <button onClick={handleSubmit} className="mt-6 w-full bg-blue-500 text-white py-2 rounded hover:bg-blue-600 transition-all transform hover:scale-105">
+        <motion.button
+          onClick={handleSubmit}
+          className="mt-6 w-full bg-blue-500 text-white py-2 rounded hover:bg-blue-600 transition-all transform"
+          whileHover={{ scale: 1.05 }}
+          whileTap={{ scale: 0.95 }}
+        >
           Book Now
-        </button>
-      </div>
+        </motion.button>
+      </motion.div>
     </div>
   );
 }
