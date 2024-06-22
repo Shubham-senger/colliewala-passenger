@@ -1,15 +1,20 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
+import DatePicker from 'react-datepicker';
+import 'react-datepicker/dist/react-datepicker.css';
+import TimePicker from 'react-time-picker';
+import 'react-time-picker/dist/TimePicker.css';
+import 'react-clock/dist/Clock.css';
 
 const servingStations = ['Prayagraj Rambagh', 'Jhunsi', 'Banaras'];
 
 function BookPage() {
   const [selectedStation, setSelectedStation] = useState('');
-  const [time, setTime] = useState('');
+  const [time, setTime] = useState(new Date());
   const [error, setError] = useState('');
   const [trainNumber, setTrainNumber] = useState('');
-  const [date, setDate] = useState('');
+  const [date, setDate] = useState(new Date());
   const [mode, setMode] = useState('');
 
   const handleStationSelect = (e) => {
@@ -46,20 +51,22 @@ function BookPage() {
   };
 
   return (
-    <div className="flex flex-col items-center justify-center h-screen bg-gray-900 p-4 relative overflow-hidden">
-      <div className="absolute inset-0 opacity-75 bg-cover bg-center" style={{ backgroundImage: 'url(https://raw.githubusercontent.com/mohammadjarabah681/codepen-assets/main/pens/ExpzvRa/images/bg-desktop.png)' }}></div>
+    <div className="flex flex-col items-center justify-center h-screen bg-gray-900 p-4 relative overflow-auto">
+      <div className="absolute inset-0 bg-cover bg-center" style={{ backgroundImage: 'url(https://raw.githubusercontent.com/mohammadjarabah681/codepen-assets/main/pens/ExpzvRa/images/bg-desktop.png)' }}></div>
+      
 
       <motion.h1
-        className="text-4xl font-bold text-white mb-6"
+        className="text-4xl font-bold text-white mb-6 z-10"
         initial={{ opacity: 0, y: -50 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
       >
         Book Your Collie
       </motion.h1>
+      <div className='overflow-auto w-96'>
 
       <motion.div
-        className="bg-white bg-opacity-20 backdrop-blur-lg p-8 rounded-2xl shadow-xl max-w-md w-full text-white"
+        className="bg-white bg-opacity-20 backdrop-blur-lg p-8 rounded-2xl shadow-xl max-w-md w-full text-white z-10"
         initial={{ opacity: 0, scale: 0.8 }}
         animate={{ opacity: 1, scale: 1 }}
         transition={{ duration: 0.5 }}
@@ -101,6 +108,7 @@ function BookPage() {
             Manually enter
           </motion.div>
         </div>
+        
 
         {mode === 'train' && (
           <>
@@ -109,7 +117,7 @@ function BookPage() {
               <input
                 type="text"
                 id="trainNumber"
-                className="w-full p-2 border rounded bg-white bg-opacity-50 text-gray-800"
+                className="w-full p-2 border rounded bg-white bg-opacity-50 text-gray-800 placeholder-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
                 value={trainNumber}
                 onChange={(e) => setTrainNumber(e.target.value)}
                 placeholder="Enter train number"
@@ -117,15 +125,15 @@ function BookPage() {
             </div>
             <div className="mt-4">
               <label htmlFor="date" className="block text-sm font-medium">Date:</label>
-              <input
-                type="date"
-                id="date"
-                className="w-full p-2 border rounded bg-white bg-opacity-50 text-gray-800"
-                value={date}
-                onChange={(e) => setDate(e.target.value)}
-                placeholder="Enter date"
+              <DatePicker
+                selected={date}
+                onChange={(date) => setDate(date)}
+                dateFormat="dd/MM/yyyy"
+                className="w-full p-2 border rounded bg-white bg-opacity-50 text-gray-800 placeholder-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
+              
             </div>
+            
           </>
         )}
 
@@ -136,21 +144,25 @@ function BookPage() {
               <input
                 type="text"
                 id="station"
-                className="w-full p-2 border rounded bg-white bg-opacity-50 text-gray-800"
+                className="w-full p-2 border rounded bg-white bg-opacity-50 text-gray-800 placeholder-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
                 value={selectedStation}
                 onChange={handleStationSelect}
                 placeholder="Please select a station"
               />
             </div>
             <div className="mt-4">
-              <label className="block mb-2 font-semibold">Time:</label>
-              <input
-                type="text"
-                className="w-full p-2 border rounded bg-white bg-opacity-50 text-gray-800"
-                value={time}
-                onChange={(e) => setTime(e.target.value)}
-                placeholder="Enter time"
-              />
+              <label htmlFor="time" className="block text-sm font-medium">Time:</label>
+              <div className="w-full p-2 border rounded bg-white bg-opacity-50 text-gray-800 placeholder-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                <TimePicker
+                  onChange={setTime}
+                  value={time}
+                  className="w-full"
+                  disableClock={false}
+                  clockClassName="bg-white bg-opacity-50 text-gray-800"
+                  hourPlaceholder="HH"
+                  minutePlaceholder="MM"
+                />
+              </div>
             </div>
           </>
         )}
@@ -166,6 +178,7 @@ function BookPage() {
           Book Now
         </motion.button>
       </motion.div>
+      </div>
     </div>
   );
 }

@@ -65,7 +65,7 @@ const ProgressBar = () => {
             <span className="text-gray-900 font-bold">Pickup Point: Platform NO 1</span>
             <div className="arrow-down"></div>
           </div>
-          <div className="mt-8 flex space-x-4">
+          <div className="mt-8 flex space-x-4"> 
             <button onClick={() => updateProgress('orderReceived')} className="bg-gray-900 w-20 h-12 flex justify-center items-center rounded-lg hover:bg-gray-700 active:scale-90" aria-label="Order ID" title="Order">order is received</button>
             <button onClick={() => updateProgress('orderReceivedByCollie')} className="bg-gray-900 w-20 h-12 flex justify-center items-center rounded-lg hover:bg-gray-700 active:scale-90" aria-label="Location" title="GPS">
               accepted by collie

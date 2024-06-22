@@ -14,7 +14,7 @@ const Navbar = () => {
   };
 
   return (
-    <div className={`fixed top-0 left-0 h-screen bg-[#12192C] text-white p-4 transition-all duration-500 z-100 ${isExpanded ? 'w-64' : 'w-20'}`} id="navbar">
+    <div className={`fixed top-0 left-0 h-screen bg-[#12192C] text-white p-4 transition-all duration-500 z-50 ${isExpanded ? 'w-64' : 'w-20'}`} id="navbar">
       <nav className="flex flex-col justify-between h-full">
         <div>
           <div className="flex justify-between items-center mb-6">
