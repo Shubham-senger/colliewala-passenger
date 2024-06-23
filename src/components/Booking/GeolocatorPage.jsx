@@ -1,131 +1,150 @@
+// src/GeolocationComponent.js
 import React, { useState, useEffect } from 'react';
-import { GoogleMap, LoadScriptNext, MarkerF } from '@react-google-maps/api';
-import { Link, useNavigate } from 'react-router-dom';
+import { Card } from 'flowbite-react';
 
-const servingStations = [
-  { name: 'Prayagraj Rambagh', lat: 25.4358, lon: 81.8463 },
-  { name: 'Jhunsi', lat: 25.4520, lon: 81.8510 },
-  { name: 'Banaras', lat: 25.3176, lon: 82.9739 },
-];
+const BASE_URL = 'https://reversegeocoder.vercel.app/distance?';
 
-function calculateDistance(lat1, lon1, lat2, lon2) {
-  const R = 6371; // Radius of the Earth in km
-  const dLat = (lat2 - lat1) * (Math.PI / 180);
-  const dLon = (lon2 - lon1) * (Math.PI / 180);
-  const a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-            Math.cos(lat1 * (Math.PI / 180)) * Math.cos(lat2 * (Math.PI / 180)) *
-            Math.sin(dLon / 2) * Math.sin(dLon / 2);
-  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-  return R * c; // Distance in km
-}
-
-function GeolocatorModal({ onClose, onStationSelect }) {
-  const [location, setLocation] = useState(null);
-  const [nearestStation, setNearestStation] = useState(null);
-  const [error, setError] = useState('');
-  const [loading, setLoading] = useState(true);
-  const navigate = useNavigate();
+export function GeolocationComponent() {
+  const [position, setPosition] = useState({
+    latitude: null,
+    longitude: null,
+    accuracy: null,
+    speed: null,
+  });
+  const [error, setError] = useState(null);
+  const [distanceData, setDistanceData] = useState(null);
 
   useEffect(() => {
     if (navigator.geolocation) {
+      const timeoutId = setTimeout(() => {
+        setError('Geolocation timed out.');
+      }, 10000); // Set a 10-second timeout
+
       navigator.geolocation.getCurrentPosition(
         (position) => {
-          setLocation({
-            lat: position.coords.latitude,
-            lon: position.coords.longitude,
+          clearTimeout(timeoutId);
+          setPosition({
+            latitude: position.coords.latitude,
+            longitude: position.coords.longitude,
+            accuracy: position.coords.accuracy,
+            speed: position.coords.speed,
           });
-          setLoading(false);
         },
         (error) => {
-          setError('Unable to retrieve your location');
-          setLoading(false);
+          clearTimeout(timeoutId);
+          setError(error.message);
         }
       );
     } else {
-      setError('Geolocation is not supported by this browser');
-      setLoading(false);
+      setError('Geolocation is not supported by this browser or device.');
     }
   }, []);
 
   useEffect(() => {
-    if (location) {
-      let closestStation = null;
-      let minDistance = Infinity;
-
-      servingStations.forEach((station) => {
-        const distance = calculateDistance(location.lat, location.lon, station.lat, station.lon);
-
-        if (distance < minDistance) {
-          closestStation = station;
-          minDistance = distance;
-        }
-      });
-
-      if (minDistance <= 10) {
-        setNearestStation({ ...closestStation, time: 'within 15 mins' });
-      } else if (minDistance <= 50) {
-        setNearestStation({ ...closestStation, time: 'within 40 mins' });
-      } else if (minDistance <= 100) {
-        setNearestStation({ ...closestStation, time: 'within 1 hour' });
-      } else {
-        setNearestStation(null);
-        setError('We are not servicing this area yet');
-      }
+    if (position.latitude !== null && position.longitude !== null) {
+      fetch(`${BASE_URL}lat=${position.latitude}&lon=${position.longitude}`)
+        .then((response) => response.json())
+        .then((data) => {
+          setDistanceData(data);
+        })
+        .catch((error) => {
+          console.error('Error fetching distance:', error);
+        });
     }
-  }, [location]);
-
-  const handleAccept = () => {
-    if (nearestStation) {
-      navigate('/book', { state: { station: nearestStation.name, time: nearestStation.time } });
-    }
-  };
+  }, [position]);
 
   return (
-    <div className="fixed inset-0 bg-gray-600 bg-opacity-50 flex items-center justify-center">
-      <div className="bg-white p-8 rounded shadow-lg max-w-md w-full">
-        <h1 className="text-3xl font-bold mb-6">Select Nearest Station</h1>
-        {loading && <p>Loading your location...</p>}
-        {error && <p className="text-red-500">{error}</p>}
-        {nearestStation && (
-          <div>
-            <p className="mb-4">
-              The nearest station is <strong>{nearestStation.name}</strong> ({nearestStation.time})
-            </p>
-            <button
-              onClick={handleAccept}
-              className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
-            >
-              Accept Station
-            </button>
-          </div>
-        )}
-        {!loading && !nearestStation && !error && <p>Calculating nearest station...</p>}
-        <div className="mt-4">
-          <LoadScriptNext
-            googleMapsApiKey="YOUR_GOOGLE_MAPS_API_KEY" // Replace with your actual API key
-            libraries={['places']}
-          >
-            <GoogleMap
-              mapContainerStyle={{ width: '100%', height: '400px' }}
-              center={location ? { lat: location.lat, lng: location.lon } : { lat: 0, lng: 0 }}
-              zoom={10}
-            >
-              {location && (
-                <MarkerF position={{ lat: location.lat, lng: location.lon }} />
-              )}
-            </GoogleMap>
-          </LoadScriptNext>
+    <div className="relative min-h-screen ">
+      <div className="container mx-auto pt-8 relative z-10 flex flex-col items-center">
+        <div className="w-full md:w-1/2 lg:w-1/3 mb-4">
+          {/* Geolocation Details Card */}
+          <Card className="backdrop-blur-md shadow-lg bg-opacity-0 border-2 border-gray-300">
+            <div className="mb-4">
+              <h5 className="text-xl font-bold leading-none text-gray-900 dark:text-white">
+                Geolocation Details
+              </h5>
+            </div>
+            <div>
+              <ul className="divide-y divide-gray-200 dark:divide-gray-700">
+                {error ? (
+                  <li className="py-3 sm:py-4">
+                    <p className="text-sm text-red-500">{error}</p>
+                  </li>
+                ) : position.latitude && position.longitude ? (
+                  <>
+                    <li className="py-3 sm:py-4">
+                      <div className="flex items-center space-x-4">
+                        <div className="min-w-0 flex-1">
+                          <p className="truncate text-sm font-medium text-gray-900 dark:text-white">
+                            Latitude: {position.latitude}
+                          </p>
+                          <p className="truncate text-sm text-gray-500 dark:text-gray-400">
+                            Longitude: {position.longitude}
+                          </p>
+                          <p className="truncate text-sm text-gray-500 dark:text-gray-400">
+                            Accuracy: ±{position.accuracy} meters
+                          </p>
+                          <p className="truncate text-sm text-gray-500 dark:text-gray-400">
+                            Speed: {position.speed} m/s
+                          </p>
+                        </div>
+                      </div>
+                    </li>
+                  </>
+                ) : (
+                  <li className="py-3 sm:py-4">
+                    <p>Loading geolocation...</p>
+                  </li>
+                )}
+              </ul>
+            </div>
+          </Card>
         </div>
-        <div className="mt-4">
-          <Link to="/book">
-            <button className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">
-              Write Manually
-            </button>
-          </Link>
+
+        <div className="w-full md:w-1/2 lg:w-1/3">
+          {/* Distance Information Card */}
+          <Card className="backdrop-blur-md shadow-lg bg-opacity-0 border-2 border-gray-300">
+            <div className="mb-4">
+              <h5 className="text-xl font-bold leading-none text-gray-900 dark:text-white">
+                Distance Information
+              </h5>
+            </div>
+            <div>
+              <ul className="divide-y divide-gray-200 dark:divide-gray-700">
+                {distanceData ? (
+                  <>
+                    <li className="py-3 sm:py-4">
+                      <div className="flex items-center space-x-4">
+                        <div className="min-w-0 flex-1">
+                          <p className="truncate text-sm font-medium text-gray-900 dark:text-white">
+                            Origin: {distanceData.origin_addresses[0]}
+                          </p>
+                          <p className="truncate text-sm text-gray-500 dark:text-gray-400">
+                            Destination: {distanceData.destination_addresses[0]}
+                          </p>
+                          <p className="truncate text-sm text-gray-500 dark:text-gray-400">
+                            Distance: {distanceData.rows[0].elements[0].distance.text}
+                          </p>
+                          <p className="truncate text-sm text-gray-500 dark:text-gray-400">
+                            Duration: {distanceData.rows[0].elements[0].duration.text}
+                          </p>
+                          <p className="truncate text-sm text-gray-500 dark:text-gray-400">
+                            Status: {distanceData.status}
+                          </p>
+                        </div>
+                      </div>
+                    </li>
+                  </>
+                ) : (
+                  <li className="py-3 sm:py-4">
+                    <p>Loading distance information...</p>
+                  </li>
+                )}
+              </ul>
+            </div>
+          </Card>
         </div>
       </div>
     </div>
   );
 }
-
-export default GeolocatorModal;

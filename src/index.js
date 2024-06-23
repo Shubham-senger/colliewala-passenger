@@ -9,7 +9,7 @@ import Register1 from "./pages/register1";
 import Register2 from "./pages/register2";
 import OtpForm from "./pages/otpform";
 import BookPage from "./components/Booking/BookPage";
-import GeolocatorPage from "./components/Booking/GeolocatorPage";
+import GeolocatorPage from "./pages/GeolocatorPage";
 import PNRStation from "./components/Booking/PNRstation";
 import ProgressBar from "./components/ProgressBar";
 import BillDetailsCard from "./components/BillCardDetails";
