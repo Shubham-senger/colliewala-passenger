@@ -5,6 +5,8 @@ import { auth, RecaptchaVerifier, signInWithPhoneNumber } from '../../firebase/f
 
 const MobileLogin = ({ setVerificationId }) => {
   const [mobileNumber, setMobileNumber] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
 
   useEffect(() => {
     const setupRecaptcha = () => {
@@ -13,14 +15,20 @@ const MobileLogin = ({ setVerificationId }) => {
           size: 'invisible',
           callback: (response) => {
             // reCAPTCHA solved, allow signInWithPhoneNumber.
-            onSignInSubmit();
+          },
+
+          'expired-callback': () => {
+            setError('reCAPTCHA expired. Please try again.');
           },
         });
       }
     };
 
     setupRecaptcha();
+    
   }, []);
+
+  
 
   const handleMobileSubmit = async (event) => {
     event.preventDefault();
@@ -39,6 +47,7 @@ const MobileLogin = ({ setVerificationId }) => {
       })
       .catch((error) => {
         console.error(error);
+        alert('Failed to send OTP. Please try again.');
       });
   };
 

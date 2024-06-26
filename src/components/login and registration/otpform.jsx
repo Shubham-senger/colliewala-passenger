@@ -5,12 +5,13 @@ import { auth, PhoneAuthProvider, signInWithCredential, RecaptchaVerifier, signI
 const OtpForm = ({ verificationId, mobileNumber }) => {
   const [otp, setOtp] = useState('');
   const [error, setError] = useState('');
+  const [newVerificationId, setNewVerificationId] = useState(verificationId);
   const navigate = useNavigate();
 
   const handleOtpSubmit = (event) => {
     event.preventDefault();
 
-    const credential = PhoneAuthProvider.credential(verificationId, otp);
+    const credential = PhoneAuthProvider.credential(newVerificationId, otp);
     signInWithCredential(auth, credential)
       .then((result) => {
         console.log("User signed in successfully:", result.user);
@@ -29,7 +30,6 @@ const OtpForm = ({ verificationId, mobileNumber }) => {
         size: 'invisible',
         callback: (response) => {
           // reCAPTCHA solved, allow signInWithPhoneNumber.
-          onSignInSubmit();
         },
       });
     };
@@ -40,7 +40,7 @@ const OtpForm = ({ verificationId, mobileNumber }) => {
     signInWithPhoneNumber(auth, mobileNumber, appVerifier)
       .then((confirmationResult) => {
         alert('A new OTP has been sent to your phone.');
-        setVerificationId(confirmationResult.verificationId);
+        setNewVerificationId(confirmationResult.verificationId);
       })
       .catch((error) => {
         console.error('Error sending OTP:', error);
