@@ -1,9 +1,54 @@
-import React, { useEffect } from "react";
+import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { auth, PhoneAuthProvider, signInWithCredential, RecaptchaVerifier, signInWithPhoneNumber } from '../../firebase/firebase.js';
 
-export default function OtpForm() {
-  
+const OtpForm = ({ verificationId, mobileNumber }) => {
+  const [otp, setOtp] = useState('');
+  const [error, setError] = useState('');
+  const navigate = useNavigate();
+
+  const handleOtpSubmit = (event) => {
+    event.preventDefault();
+
+    const credential = PhoneAuthProvider.credential(verificationId, otp);
+    signInWithCredential(auth, credential)
+      .then((result) => {
+        console.log("User signed in successfully:", result.user);
+        navigate('/');  // Redirect to the home page upon successful sign-in
+      })
+      .catch((error) => {
+        console.error('Error signing in:', error);
+        setError('Incorrect OTP. Please try again.');
+      });
+  };
+
+  const resendOtp = () => {
+    // Setup reCAPTCHA
+    const setupRecaptcha = () => {
+      window.recaptchaVerifier = new RecaptchaVerifier('recaptcha-container', {
+        size: 'invisible',
+        callback: (response) => {
+          // reCAPTCHA solved, allow signInWithPhoneNumber.
+          onSignInSubmit();
+        },
+      });
+    };
+
+    setupRecaptcha();
+    const appVerifier = window.recaptchaVerifier;
+
+    signInWithPhoneNumber(auth, mobileNumber, appVerifier)
+      .then((confirmationResult) => {
+        alert('A new OTP has been sent to your phone.');
+        setVerificationId(confirmationResult.verificationId);
+      })
+      .catch((error) => {
+        console.error('Error sending OTP:', error);
+        alert('Failed to send OTP. Please try again.');
+      });
+  };
+
   useEffect(() => {
-
     const form = document.getElementById("otp-form");
     const inputs = Array.from(form.querySelectorAll("input[type=text]"));
     const submit = form.querySelector("button[type=submit]");
@@ -11,20 +56,11 @@ export default function OtpForm() {
     const handleKeyDown = (e) => {
       const index = inputs.indexOf(e.target);
 
-      if (
-        !/^[0-9]{1}$/.test(e.key) &&
-        e.key !== "Backspace" &&
-        e.key !== "Delete" &&
-        e.key !== "Tab" &&
-        !e.metaKey
-      ) {
+      if (!/^[0-9]{1}$/.test(e.key) && e.key !== "Backspace" && e.key !== "Delete" && e.key !== "Tab" && !e.metaKey) {
         e.preventDefault();
       }
 
-      if (
-        (e.key === "Delete" || e.key === "Backspace") &&
-        e.target.value === ""
-      ) {
+      if ((e.key === "Delete" || e.key === "Backspace") && e.target.value === "") {
         if (index > 0) {
           inputs[index - 1].focus();
         }
@@ -45,7 +81,6 @@ export default function OtpForm() {
     };
 
     const handleFocus = (e) => {
-      console.log("Focus");
       e.target.select();
     };
 
@@ -88,43 +123,26 @@ export default function OtpForm() {
                 Mobile Phone Verification
               </h1>
               <p className="text-[15px] text-slate-500">
-                Enter the 6-digit verification code that was sent to your phone
-                number.
+                Enter the 6-digit verification code that was sent to your phone number.
               </p>
             </header>
-            <form id="otp-form">
+            {error && <p className="text-red-500">{error}</p>}
+            <form id="otp-form" onSubmit={handleOtpSubmit}>
               <div className="flex items-center justify-center gap-3">
-                <input
-                  type="text"
-                  className="w-14 h-14 text-center text-2xl font-extrabold text-slate-900 bg-slate-100 border border-transparent hover:border-slate-200 appearance-none rounded p-4 outline-none focus:bg-white focus:border-red-400 focus:ring-2 focus:ring-red-100"
-                  pattern="\d*"
-                  maxLength="1"
-                />
-                <input
-                  type="text"
-                  className="w-14 h-14 text-center text-2xl font-extrabold text-slate-900 bg-slate-100 border border-transparent hover:border-slate-200 appearance-none rounded p-4 outline-none focus:bg-white focus:border-red-400 focus:ring-2 focus:ring-red-100"
-                  maxLength="1"
-                />
-                <input
-                  type="text"
-                  className="w-14 h-14 text-center text-2xl font-extrabold text-slate-900 bg-slate-100 border border-transparent hover:border-slate-200 appearance-none rounded p-4 outline-none focus:bg-white focus:border-red-400 focus:ring-2 focus:ring-red-100"
-                  maxLength="1"
-                />
-                <input
-                  type="text"
-                  className="w-14 h-14 text-center text-2xl font-extrabold text-slate-900 bg-slate-100 border border-transparent hover:border-slate-200 appearance-none rounded p-4 outline-none focus:bg-white focus:border-red-400 focus:ring-2 focus:ring-red-100"
-                  maxLength="1"
-                />
-                <input
-                  type="text"
-                  className="w-14 h-14 text-center text-2xl font-extrabold text-slate-900 bg-slate-100 border border-transparent hover:border-slate-200 appearance-none rounded p-4 outline-none focus:bg-white focus:border-red-400 focus:ring-2 focus:ring-red-100"
-                  maxLength="1"
-                />
-                <input
-                  type="text"
-                  className="w-14 h-14 text-center text-2xl font-extrabold text-slate-900 bg-slate-100 border border-transparent hover:border-slate-200 appearance-none rounded p-4 outline-none focus:bg-white focus:border-red-400 focus:ring-2 focus:ring-red-100"
-                  maxLength="1"
-                />
+                {[...Array(6)].map((_, index) => (
+                  <input
+                    key={index}
+                    type="text"
+                    className="w-14 h-14 text-center text-2xl font-extrabold text-slate-900 bg-slate-100 border border-transparent hover:border-slate-200 appearance-none rounded p-4 outline-none focus:bg-white focus:border-red-400 focus:ring-2 focus:ring-redfocus:ring-2 focus:ring-red-100"
+                    maxLength="1"
+                    value={otp[index] || ''}
+                    onChange={(e) => {
+                      const newOtp = [...otp];
+                      newOtp[index] = e.target.value;
+                      setOtp(newOtp.join(''));
+                    }}
+                  />
+                ))}
               </div>
               <div className="max-w-[260px] mx-auto mt-4">
                 <button
@@ -138,15 +156,18 @@ export default function OtpForm() {
             <div className="text-sm text-slate-500 mt-4">
               Didn't receive code?{" "}
               <a
-                className="font-medium text-red-500 hover:text-#EC1C24-600"
-                href="#0"
+                className="font-medium text-red-500 hover:text-#EC1C24-600 cursor-pointer"
+                onClick={resendOtp}
               >
                 Resend
               </a>
             </div>
+            <div id="recaptcha-container"></div>
           </div>
         </div>
       </div>
     </div>
   );
-}
+};
+
+export default OtpForm;

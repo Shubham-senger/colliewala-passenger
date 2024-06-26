@@ -1,0 +1,119 @@
+/* Add to your CSS file or a style tag */
+
+.input {
+    width: 100%;
+    padding: 0.5rem 1rem;
+    border: 1px solid #ccc;
+    border-radius: 9999px;
+    outline: none;
+  }
+  
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.75rem 1.5rem;
+    background-color: #6a1b9a;
+    color: #fff;
+    border: none;
+    border-radius: 9999px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+  }
+  
+  .btn:hover {
+    background-color: #4a148c;
+  }
+  
+  .btn:focus {
+    outline: none;
+  }
+  
+  .flex {
+    display: flex;
+  }
+  
+  .items-center {
+    align-items: center;
+  }
+  
+  .space-y-4 {
+    margin-top: 1rem;
+  }
+  
+  .space-x-3 {
+    margin-right: 0.75rem;
+  }
+  
+  .p-4 {
+    padding: 1rem;
+  }
+  
+  .bg-gray-100 {
+    background-color: #f7fafc;
+  }
+  
+  .rounded-full {
+    border-radius: 9999px;
+  }
+  
+  .shadow-inner {
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.06);
+  }
+  
+  .w-full {
+    width: 100%;
+  }
+  
+  .bg-transparent {
+    background-color: transparent;
+  }
+  
+  .outline-none {
+    outline: none;
+  }
+  
+  .text-lg {
+    font-size: 1.125rem;
+  }
+  
+  .text-gray-600 {
+    color: #718096;
+  }
+  
+  .mt-6 {
+    margin-top: 1.5rem;
+  }
+  
+  .text-center {
+    text-align: center;
+  }
+  
+  .text-gray-600 {
+    color: #718096;
+  }
+  
+  .text-blue-600 {
+    color: #3182ce;
+  }
+  
+  .text-2xl {
+    font-size: 1.5rem;
+  }
+  
+  .font-semibold {
+    font-weight: 600;
+  }
+  
+  .bg-blue-500 {
+    background-color: #4299e1;
+  }
+  
+  .h-1 {
+    height: 0.25rem;
+  }
+  
+  .h-full {
+    height: 100%;
+  }
+  

@@ -12,7 +12,7 @@ const luggageTypes = [
   { name: "Suitcase", img: "/photo/suitcase.webp" }
 ];
 
-const App = () => {
+const Luggage = () => {
   const [cartItems, setCartItems] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
@@ -80,4 +80,4 @@ const App = () => {
   );
 };
 
-export default App;
+export default Luggage;

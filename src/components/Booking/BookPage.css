@@ -1,0 +1,66 @@
+/* BookPage.css */
+
+/* Style for the TimePicker input */
+.react-time-picker__wrapper {
+  border: none;
+  box-shadow: none;
+  background-color: transparent;
+  color: #000000;
+  font-size: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between; /* Ensure space between input and arrow */
+}
+
+.react-time-picker__inputGroup__input {
+  background-color: transparent;
+  border: none;
+  color: #000000;
+  font-size: 1rem;
+  text-align: center;
+  outline: none;
+  flex-grow: 1;
+}
+
+.react-time-picker__inputGroup__divider {
+  color: #fff;
+  font-size: 1rem;
+}
+
+/* Style for the clock */
+.react-clock {
+  background-color: rgba(255, 255, 255, 0.1);
+  color: #fff;
+  border-radius: 8px;
+  padding: 10px;
+}
+
+.react-time-picker__clock {
+  margin-top: 10px;
+}
+
+/* Hide clear button */
+.react-time-picker__clear-button {
+  display: none;
+}
+
+/* Position clock button to the right */
+.react-time-picker__clock-button {
+  background: transparent;
+  border: none;
+  color: #fff;
+  cursor: pointer;
+  padding: 0;
+  margin: 0;
+  margin-left: auto; /* Move to the right */
+  font-size: 1.5rem; /* Adjust size if needed */
+  display: flex;
+  align-items: center;
+}
+
+/* Additional styling for clock icon */
+.react-time-picker__clock-button::after {
+  content: '▼'; /* Custom arrow symbol */
+  font-size: 1rem;
+  margin-left: 8px;
+}
